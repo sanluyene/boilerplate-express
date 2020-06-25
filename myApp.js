@@ -1,10 +1,12 @@
-
 var express = require('express');
 var app = express();
 
 // --> 7)  Mount the Logger middleware here
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path} - ${req.ip}`);
+    // console.log(req.method + " " + req.path + " - " + req.ip);
+    // var string = req.method + " " + req.path + " - " + req.ip;
+    // console.log(string);
     next();
 })
 
@@ -20,7 +22,7 @@ console.log('Hello World');
 // })
 
 /** 3) Serve an HTML file */
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     let absolutePath = `${__dirname}/views/index.html`;
     res.sendFile(absolutePath);
 })
@@ -55,15 +57,28 @@ app.get('/json', (req, res) => {
 //  place it before all the routes !
 
 /** 8) Chaining middleware. A Time server */
-
+app.get('/now', (req, res, next) => {
+        req.time = new Date().toString();
+        next();
+    },
+    (req, res) => {
+        res.json({
+            time: req.time
+        })
+    }
+)
 
 /** 9)  Get input from client - Route parameters */
-
+app.get('/:word/echo', (req, res) => {
+    res.json({
+        time: req.parms.word
+    })
+})
 
 /** 10) Get input from client - Query parameters */
 // /name?first=<firstname>&last=<lastname>
 
-  
+
 /** 11) Get ready for POST Requests - the `body-parser` */
 // place it before all the routes !
 
@@ -78,4 +93,4 @@ app.get('/json', (req, res) => {
 
 //---------- DO NOT EDIT BELOW THIS LINE --------------------
 
- module.exports = app;
+module.exports = app;
